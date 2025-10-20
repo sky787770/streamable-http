@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from typing import Any, Dict, List
 
 load_dotenv()
+
 mcp = FastMCP("web_search", host="0.0.0.0", port=8000)
 
 if "TAVILY_API_KEY" not in os.environ:
@@ -28,27 +29,22 @@ def web_search(query: str) -> List[Dict]:
         response = tavily_client.search(query)
         return response["results"]
     
-    except:
-       return "No results found"
+    except Exception as e:
+       return f"Error: {str(e)}"
 
 # Run the server
 if __name__ == "__main__":
-    import uvicorn
     from fastapi.middleware.cors import CORSMiddleware
     
-    # Get the FastAPI app from FastMCP
-    app = mcp.get_app()
-    
-    # Add CORS middleware
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],  # Allow all origins
-        allow_credentials=True,
-        allow_methods=["*"],  # Allow all methods
-        allow_headers=["*"],  # Allow all headers
-    )
+    # Access the internal FastAPI app
+    if hasattr(mcp, '_app'):
+        mcp._app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
     
     print("Server has started on http://0.0.0.0:8000")
-    
-    # Run with uvicorn directly
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    mcp.run(transport="streamable-http")
