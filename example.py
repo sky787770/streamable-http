@@ -3,6 +3,7 @@ from tavily import TavilyClient
 import os
 from dotenv import load_dotenv
 from typing import Any, Dict, List
+from datetime import datetime
 
 load_dotenv()
 
@@ -31,6 +32,16 @@ def web_search(query: str) -> List[Dict]:
     
     except Exception as e:
        return f"Error: {str(e)}"
+
+@mcp.tool()
+def current_time(Zone: str = "Asia/Kolkata"):
+    """Use this tool to find current time information.
+    Args: 
+      Zone(str): Resion for which we want to find current_time.
+    Returns:
+       current datetime
+    """
+    return datetime.now()
 
 # Run the server
 if __name__ == "__main__":
