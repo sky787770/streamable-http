@@ -35,7 +35,7 @@ def web_search(query: str) -> List[Dict]:
 
 @mcp.tool()
 def current_time(Zone: str = "Asia/Kolkata"):
-    """Use this tool to find current time information.
+    """Use this tool to find current/today's time information.
     Args: 
       Zone(str): Resion for which we want to find current_time.
     Returns:
